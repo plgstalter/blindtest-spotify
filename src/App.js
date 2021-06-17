@@ -6,9 +6,10 @@ import loading from './loading.svg';
 import './App.css';
 import Sound from 'react-sound';
 import Button from './Button';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
-const apiToken = 'BQCmSrF62O2phe8OPcVma3Ypsai40PogvyJ14Lsk7h2yVdT8ggTegCJ7jqWyLFIDozXGSOduVSeLNNAJrefxONDykT1mbPldN5ESlkwjuSr2ii2NxF6XCT3DbO5MoxkcglWY6LpCBljh8hSSLOiNeb92U_cGxGjl2FuEiZO44Kp0';
+const apiToken = 'BQCk2Mqgp-EVUrLs8F63JlHKZOF9p7WA5afz4kL8l7skND7D7kel5_KEkhqdYcK59bRUM-CLEYdMXdVhOI0Yu50MZPoRPGwqHfty4wDuUM-zSs-sNAw8stszRsOqlWaHHZc36u71Ec2y4lQiXGIZ_FRvILLYCCRo-R6MnRBvoGRQ';
 function shuffleArray(array) {
   let counter = array.length;
 
@@ -35,8 +36,21 @@ const AlbumCover = (props) => {
   );
 }
 
+const Tracks = (props) => {
+  const one = props[0].track;
+  const two = props[1].track;
+  const three = props[2].track;
+}
+
+const checkAnswer = (tracks, name) => {
+  if (name==tracks[4].track.name) {
+    swal('Bravo', 'Tu as gagné');
+  } else {
+    swal('Sale merde', 'Tu es nul');
+  }
+}
+
 const App = () => {
-  const [text, setText] = useState('');
   const [tracks, setTracks] = useState('');
   const [songsLoaded, setSongs] = useState(false);
   const [image, setImage] = useState(loading);
@@ -51,14 +65,11 @@ const App = () => {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log("Réponse reçue ! Voilà ce que j'ai reçu : ", data);
-        setText('Bonjour');
         setTracks(data.items);
         setImage(logo);
         setTaille('On a ' +  data.items.length + ' chansons');
-        console.log(data.items[2].track.name);
         setSongs(true);
-        console.log(data.items[2].track);
+        console.log(tracks);
       })
   }, [])
 
@@ -69,15 +80,17 @@ const App = () => {
         <h1 className="App-title">Bienvenue sur le Blindtest</h1>
       </header>
       <div className="App-images">
-        {songsLoaded && <AlbumCover track = {tracks[2].track}/>}
+        {songsLoaded && <AlbumCover track = {tracks[4].track}/>}
         <p>On va bientôt pouvoir commencer :)</p>
 	      <p>{taille}</p>
-        {songsLoaded && <p> La première chanson est {tracks[2].track.name}</p>}
+        {songsLoaded && <p> La première chanson est {tracks[4].track.name}</p>}
       </div>
       <div className="App-buttons">
+        {songsLoaded && <Button onClick={() => checkAnswer(tracks, tracks[4].track.name)}>{tracks[4].track.name}</Button>}
+        {songsLoaded && <Button onClick={() => checkAnswer(tracks, tracks[1].track.name)}>{tracks[1].track.name}</Button>}
+        {songsLoaded && <Button onClick={() => checkAnswer(tracks, tracks[2].track.name)}>{tracks[2].track.name}</Button>}
       {songsLoaded && <Sound url={tracks[2].track.preview_url} playStatus={Sound.status.PLAYING}/>}
       </div>
-      {/* <Button>Contenu du bouton</Button> */}
     </div>
   );
 }
